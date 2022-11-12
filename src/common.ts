@@ -1,13 +1,16 @@
+/* eslint-disable no-useless-escape */
 import * as core from '@actions/core';
 import {Octokit} from '@octokit/rest';
 import {inspect} from 'util';
 import {IInputs, INPUTS} from './modals';
-
 export function getInputs(): IInputs {
   const inputs: IInputs = {
     authToken: core.getInput(INPUTS.authToken),
-    owner: core.getInput(INPUTS.owner),
-    repository: core.getInput(INPUTS.repository)
+    prNumber: parseInt(core.getInput(INPUTS.prNumber), 10),
+    prefixes: core.getInput(INPUTS.prefixes),
+    delimiter: core.getInput(INPUTS.delimiter),
+    layers: parseInt(core.getInput(INPUTS.layers), 10),
+    basePaths: core.getInput(INPUTS.basePaths)
   };
   core.debug(`Inputs: ${inspect(inputs)}`);
   return inputs;
@@ -47,4 +50,73 @@ export function getOctokit(authToken: string, userAgent = 'github-action'): Octo
     }
   }
   return octokit;
+}
+
+export async function getPullRequestFiles(octokit: Octokit, owner: string, repo: string, pullNumber: number): Promise<string[]> {
+  const response = await octokit.pulls.listFiles({
+    owner,
+    repo,
+    pull_number: pullNumber
+  });
+  return response.data.map(file => file.filename);
+}
+
+export function getRegexPattern(base: string, layers: number): string {
+  let token = `([^./]*)\/`;
+  for (let i = 1; i < layers; i++) {
+    token += token;
+  }
+  const pattern = `^(?:${base})\/${token}`;
+  core.debug(`pattern: ${pattern}`);
+  return pattern;
+}
+// return an array of tokens for each layer with the full path at the first index
+// this will be used for output
+export function getPathTokens(path: string, regexPattern: string): string[] {
+  const regex = new RegExp(regexPattern);
+  const found = path.match(regex);
+  if (!found) {
+    return [];
+  }
+  return [...found];
+}
+// first set is the full path
+export function getTokenSets(filePaths: string[], pattern: string, layers: number): Set<string>[] {
+  const labelTokenSets = [new Set<string>()];
+  for (let i = 1; i <= layers; i++) {
+    labelTokenSets.push(new Set<string>());
+  }
+
+  for (const filePath of filePaths) {
+    const tokens = getPathTokens(filePath, pattern);
+    if (tokens.length !== layers + 1) {
+      core.debug(`Tokens: ${inspect(tokens)}`);
+    }
+    // convert to for ... of loop
+    for (const [index, token] of tokens.entries()) {
+      labelTokenSets[index].add(token);
+    }
+  }
+
+  return labelTokenSets;
+}
+
+export function getLabels(prefixes: string, delimiter: string, labelTokenSets: Set<string>[]): string[] {
+  let prefixArray = labelTokenSets.map(() => '');
+  if (prefixes !== '') {
+    if (prefixArray.length !== labelTokenSets.length) {
+      core.error(`The number of prefixes (${prefixArray.length}) does not match the number of layers (${labelTokenSets.length})`);
+    } else {
+      prefixArray = prefixes.split('|');
+    }
+  }
+  const labels = labelTokenSets.map((labelTokenSet, index) => {
+    let prefix = prefixArray[index];
+    if (prefix !== '') {
+      prefix += delimiter;
+    }
+    const labelTokens = Array.from(labelTokenSet);
+    return labelTokens.map(labelToken => `${prefix}${labelToken}`.trim());
+  });
+  return labels.flat();
 }

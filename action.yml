@@ -1,21 +1,35 @@
-name: 'Your name here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
+name: 'Path Labeler'
+description: 'Add labels based on the paths of modified files'
+author: 'maxisam'
 branding:
-  icon: send
-  color: purple
+  icon: tag
+  color: red
 inputs:
   authToken:
-    description: 'Use your own token if you need to trigger other workflows'
-    required: true  
-  owner:
-    description: 'Repostory owner, defaults to context github.repository_owner if omited'
-    default: ${{ github.repository_owner }}
+    description: The GitHub token
+    required: true
+  prNumber:
+    description: The pull request number
+    default: ${{ github.event.pull_request.number || github.event.number }}
     required: false
-  repository:
-    description: 'Repository, default to context github.repository if omited'
-    default: ${{ github.repository }}
+  basePaths:
+    description: The base path to match like path1|path2
+    required: true
+  prefixes:
+    description: Prefix to repo name to be used in label, like prefix1|prefix2 for 2 layers
     required: false
+  delimiter:
+    description: delimiter between prefix and label(e.g., space)
+    required: false
+  layers:
+    description: The number of layers to use for the label
+    default: 1
+    required: false
+outputs:
+  paths:
+    description: The unique paths of modified files
+  labels:
+    description: The labels to add to the pull request
 runs:
   using: 'node16'
   main: 'dist/index.js'

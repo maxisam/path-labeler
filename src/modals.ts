@@ -1,11 +1,17 @@
 export enum INPUTS {
   authToken = 'authToken',
-  owner = 'owner',
-  repository = 'repository'
+  prNumber = 'prNumber',
+  prefixes = 'prefixes',
+  delimiter = 'delimiter',
+  layers = 'layers',
+  basePaths = 'basePaths'
 }
 
 export interface IInputs {
-  authToken: string
-  owner: string
-  repository: string
+  authToken: string;
+  prNumber: number;
+  prefixes: string;
+  delimiter: string;
+  layers: number;
+  basePaths: string;
 }
