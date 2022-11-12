@@ -156,9 +156,12 @@ function getLabels(prefixes, delimiter, labelTokenSets) {
         }
     }
     const labels = labelTokenSets.map((labelTokenSet, index) => {
-        const prefix = prefixArray[index];
+        let prefix = prefixArray[index];
+        if (prefix !== '') {
+            prefix += delimiter;
+        }
         const labelTokens = Array.from(labelTokenSet);
-        return labelTokens.map(labelToken => `${prefix}${delimiter}${labelToken}`.trim());
+        return labelTokens.map(labelToken => `${prefix}${labelToken}`.trim());
     });
     return labels.flat();
 }
