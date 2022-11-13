@@ -53,12 +53,11 @@ export function getOctokit(authToken: string, userAgent = 'github-action'): Octo
 }
 
 export async function getPullRequestFiles(octokit: Octokit, owner: string, repo: string, pullNumber: number): Promise<string[]> {
-  const response = await octokit.pulls.listFiles({
-    owner,
-    repo,
-    pull_number: pullNumber
-  });
-  return response.data.map(file => file.filename);
+  // https://octokit.github.io/rest.js/v19#pagination
+  // will get 3000 files at a time
+  return await octokit.paginate(octokit.pulls.listFiles, {owner, repo, pull_number: pullNumber}, response =>
+    response.data.map(file => file.filename)
+  );
 }
 
 export function getRegexPattern(base: string, layers: number): string {
