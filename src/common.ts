@@ -86,7 +86,8 @@ export function getTokenSets(filePaths: string[], pattern: string, layers: numbe
   for (let i = 1; i <= layers; i++) {
     labelTokenSets.push(new Set<string>());
   }
-
+  core.debug(`number of filePaths: ${filePaths.length}`);
+  core.debug(`filePaths: ${inspect(filePaths)}`);
   for (const filePath of filePaths) {
     const tokens = getPathTokens(filePath, pattern);
     if (tokens.length !== layers + 1) {

@@ -132,6 +132,8 @@ function getTokenSets(filePaths, pattern, layers) {
     for (let i = 1; i <= layers; i++) {
         labelTokenSets.push(new Set());
     }
+    core.debug(`number of filePaths: ${filePaths.length}`);
+    core.debug(`filePaths: ${(0, util_1.inspect)(filePaths)}`);
     for (const filePath of filePaths) {
         const tokens = getPathTokens(filePath, pattern);
         if (tokens.length !== layers + 1) {
