@@ -34,7 +34,7 @@ test('getTokenSets with 2 paths and 2 laypers, common sub path', () => {
   const layers = 2;
   const filePaths = ['something/else/here.ts', 'base/foo/bar/somefile.ts', 'base/foo/baz/somefile.ts'];
   const pattern = getRegexPattern('base', layers);
-  const result = getTokenSets(filePaths, pattern, layers);
+  const result = getTokenSets(filePaths, pattern, layers, false);
   expect(result).toEqual([new Set(['base/foo/bar/', 'base/foo/baz/']), new Set(['foo']), new Set(['bar', 'baz'])]);
 });
 
@@ -42,7 +42,7 @@ test('getTokenSets with 2 paths and 2 laypers, all different paths', () => {
   const layers = 2;
   const filePaths = ['something/else/here.ts', 'base/foo1/bar/somefile.ts', 'base/foo2/baz/somefile.ts'];
   const pattern = getRegexPattern('base', layers);
-  const result = getTokenSets(filePaths, pattern, layers);
+  const result = getTokenSets(filePaths, pattern, layers, false);
   expect(result).toEqual([new Set(['base/foo1/bar/', 'base/foo2/baz/']), new Set(['foo1', 'foo2']), new Set(['bar', 'baz'])]);
 });
 
@@ -50,7 +50,7 @@ test('getTokenSets with 2 paths and 1 laypers, all different paths', () => {
   const layers = 1;
   const filePaths = ['something/else/here.ts', 'base/foo1/bar/somefile.ts', 'base/foo2/baz/somefile.ts'];
   const pattern = getRegexPattern('base', layers);
-  const result = getTokenSets(filePaths, pattern, layers);
+  const result = getTokenSets(filePaths, pattern, layers, false);
   expect(result).toEqual([new Set(['base/foo1/', 'base/foo2/']), new Set(['foo1', 'foo2'])]);
 });
 

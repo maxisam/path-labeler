@@ -10,7 +10,8 @@ export function getInputs(): IInputs {
     prefixes: core.getInput(INPUTS.prefixes),
     delimiter: core.getInput(INPUTS.delimiter),
     layers: parseInt(core.getInput(INPUTS.layers), 10),
-    basePaths: core.getInput(INPUTS.basePaths)
+    basePaths: core.getInput(INPUTS.basePaths),
+    debugShowPaths: core.getInput(INPUTS.debugShowPaths) === 'true'
   };
   core.debug(`Inputs: ${inspect(inputs)}`);
   return inputs;
@@ -80,13 +81,13 @@ export function getPathTokens(path: string, regexPattern: string): string[] {
   return [...found];
 }
 // first set is the full path
-export function getTokenSets(filePaths: string[], pattern: string, layers: number): Set<string>[] {
+export function getTokenSets(filePaths: string[], pattern: string, layers: number, debugShowPaths: boolean): Set<string>[] {
   const labelTokenSets = [new Set<string>()];
   for (let i = 1; i <= layers; i++) {
     labelTokenSets.push(new Set<string>());
   }
   core.debug(`number of filePaths: ${filePaths.length}`);
-  core.debug(`filePaths: ${inspect(filePaths)}`);
+  debugShowPaths && core.debug(`filePaths: ${inspect(filePaths)}`);
   for (const filePath of filePaths) {
     const tokens = getPathTokens(filePath, pattern);
     if (tokens.length !== layers + 1) {

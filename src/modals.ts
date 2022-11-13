@@ -4,7 +4,8 @@ export enum INPUTS {
   prefixes = 'prefixes',
   delimiter = 'delimiter',
   layers = 'layers',
-  basePaths = 'basePaths'
+  basePaths = 'basePaths',
+  debugShowPaths = 'debugShowPaths'
 }
 
 export interface IInputs {
@@ -14,4 +15,5 @@ export interface IInputs {
   delimiter: string;
   layers: number;
   basePaths: string;
+  debugShowPaths: boolean;
 }
