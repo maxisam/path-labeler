@@ -96,12 +96,9 @@ function getOctokit(authToken, userAgent = 'github-action') {
 exports.getOctokit = getOctokit;
 function getPullRequestFiles(octokit, owner, repo, pullNumber) {
     return __awaiter(this, void 0, void 0, function* () {
-        const response = yield octokit.pulls.listFiles({
-            owner,
-            repo,
-            pull_number: pullNumber
-        });
-        return response.data.map(file => file.filename);
+        // https://octokit.github.io/rest.js/v19#pagination
+        // will get 3000 files at a time
+        return yield octokit.paginate(octokit.pulls.listFiles, { owner, repo, pull_number: pullNumber }, response => response.data.map(file => file.filename));
     });
 }
 exports.getPullRequestFiles = getPullRequestFiles;
