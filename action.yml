@@ -25,6 +25,10 @@ inputs:
     description: The number of layers to use for the label
     default: 1
     required: false
+  debugShowPaths:
+    description: show all PR paths in debug mode
+    default: false
+    required: false
 outputs:
   paths:
     description: The unique paths of modified files

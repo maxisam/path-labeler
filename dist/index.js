@@ -52,7 +52,8 @@ function getInputs() {
         prefixes: core.getInput(modals_1.INPUTS.prefixes),
         delimiter: core.getInput(modals_1.INPUTS.delimiter),
         layers: parseInt(core.getInput(modals_1.INPUTS.layers), 10),
-        basePaths: core.getInput(modals_1.INPUTS.basePaths)
+        basePaths: core.getInput(modals_1.INPUTS.basePaths),
+        debugShowPaths: core.getInput(modals_1.INPUTS.debugShowPaths) === 'true'
     };
     core.debug(`Inputs: ${(0, util_1.inspect)(inputs)}`);
     return inputs;
@@ -120,17 +121,18 @@ function getPathTokens(path, regexPattern) {
     if (!found) {
         return [];
     }
-    return [...found];
+    // remove the tailing slash
+    return [found[0].slice(0, -1), ...found.slice(1)];
 }
 exports.getPathTokens = getPathTokens;
 // first set is the full path
-function getTokenSets(filePaths, pattern, layers) {
+function getTokenSets(filePaths, pattern, layers, debugShowPaths) {
     const labelTokenSets = [new Set()];
     for (let i = 1; i <= layers; i++) {
         labelTokenSets.push(new Set());
     }
     core.debug(`number of filePaths: ${filePaths.length}`);
-    core.debug(`filePaths: ${(0, util_1.inspect)(filePaths)}`);
+    debugShowPaths && core.debug(`filePaths: ${(0, util_1.inspect)(filePaths)}`);
     for (const filePath of filePaths) {
         const tokens = getPathTokens(filePath, pattern);
         if (tokens.length !== layers + 1) {
@@ -241,7 +243,7 @@ function run() {
             try {
                 const filePaths = yield (0, common_1.getPullRequestFiles)(octokit, owner, repo, inputs.prNumber);
                 const pattern = (0, common_1.getRegexPattern)(inputs.basePaths, inputs.layers);
-                const tokenSets = (0, common_1.getTokenSets)(filePaths, pattern, inputs.layers);
+                const tokenSets = (0, common_1.getTokenSets)(filePaths, pattern, inputs.layers, inputs.debugShowPaths);
                 core.setOutput('paths', Array.from(tokenSets[0]));
                 // only get sets for labels
                 const labels = (0, common_1.getLabels)(inputs.prefixes, inputs.delimiter, tokenSets.slice(1));
@@ -297,6 +299,7 @@ var INPUTS;
     INPUTS["delimiter"] = "delimiter";
     INPUTS["layers"] = "layers";
     INPUTS["basePaths"] = "basePaths";
+    INPUTS["debugShowPaths"] = "debugShowPaths";
 })(INPUTS = exports.INPUTS || (exports.INPUTS = {}));
 
 

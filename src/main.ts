@@ -12,7 +12,7 @@ async function run(): Promise<void> {
     try {
       const filePaths = await getPullRequestFiles(octokit, owner, repo, inputs.prNumber);
       const pattern = getRegexPattern(inputs.basePaths, inputs.layers);
-      const tokenSets = getTokenSets(filePaths, pattern, inputs.layers);
+      const tokenSets = getTokenSets(filePaths, pattern, inputs.layers, inputs.debugShowPaths);
       core.setOutput('paths', Array.from(tokenSets[0]));
       // only get sets for labels
       const labels = getLabels(inputs.prefixes, inputs.delimiter, tokenSets.slice(1));
