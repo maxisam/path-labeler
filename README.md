@@ -1,6 +1,4 @@
-<p align="center">
-  <a href="https://github.com/maxisam/path-labeler/actions"><img alt="typescript-action status" src="https://github.com/maxisam/path-labeler/workflows/CI/badge.svg"></a>
-</p>
+[![🌞 CI](https://github.com/maxisam/path-labeler/actions/workflows/CI.yml/badge.svg)](https://github.com/maxisam/path-labeler/actions/workflows/CI.yml)
 
 # Path Labeler
 
