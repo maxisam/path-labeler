@@ -78,7 +78,8 @@ export function getPathTokens(path: string, regexPattern: string): string[] {
   if (!found) {
     return [];
   }
-  return [...found];
+  // remove the tailing slash
+  return [found[0].slice(0, -1), ...found.slice(1)];
 }
 // first set is the full path
 export function getTokenSets(filePaths: string[], pattern: string, layers: number, debugShowPaths: boolean): Set<string>[] {
