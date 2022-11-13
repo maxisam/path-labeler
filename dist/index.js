@@ -246,6 +246,10 @@ function run() {
                 // only get sets for labels
                 const labels = (0, common_1.getLabels)(inputs.prefixes, inputs.delimiter, tokenSets.slice(1));
                 core.setOutput('labels', labels);
+                if (!labels.length) {
+                    core.info('No labels found');
+                    return;
+                }
                 request = (0, create_action_request_1.createActionRequest)(owner, repo, inputs.prNumber, labels);
                 core.debug(`dispatch event request: ${(0, util_1.inspect)(request)}`);
             }
