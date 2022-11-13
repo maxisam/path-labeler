@@ -17,6 +17,10 @@ async function run(): Promise<void> {
       // only get sets for labels
       const labels = getLabels(inputs.prefixes, inputs.delimiter, tokenSets.slice(1));
       core.setOutput('labels', labels);
+      if (!labels.length) {
+        core.info('No labels found');
+        return;
+      }
       request = createActionRequest(owner, repo, inputs.prNumber, labels);
       core.debug(`dispatch event request: ${inspect(request)}`);
     } catch (error) {
