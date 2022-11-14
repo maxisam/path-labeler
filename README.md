@@ -27,9 +27,9 @@ labeler:
   runs-on: ubuntu-latest
   steps:
     - uses: actions/checkout@v3
-    - uses: ./
+    - uses: maxisam/path-labeler@main
       with:
-        authToken: ${{secrets.GITHUB_TOKEN }}
+        authToken: ${{ secrets.GITHUB_TOKEN }}
         basePaths: 'base1|base2'
         prefixes: 'prefix1|prefix2'
         delimiter: ':'
