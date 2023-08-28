@@ -19,14 +19,18 @@ inputs:
     description: Prefix to repo name to be used in label, like prefix1|prefix2 for 2 layers
     required: false
   delimiter:
-    description: delimiter between prefix and label(e.g., space)
+    description: Delimiter between prefix and label(e.g., space)
     required: false
   layers:
     description: The number of layers to use for the label
     default: 1
     required: false
   debugShowPaths:
-    description: show all PR paths in debug mode
+    description: Show all PR paths in debug mode
+    default: false
+    required: false
+  isDryRun:
+    description: Don't push labels to github
     default: false
     required: false
 outputs:

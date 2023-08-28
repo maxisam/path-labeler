@@ -5,7 +5,8 @@ export enum INPUTS {
   delimiter = 'delimiter',
   layers = 'layers',
   basePaths = 'basePaths',
-  debugShowPaths = 'debugShowPaths'
+  debugShowPaths = 'debugShowPaths',
+  isDryRun = 'isDryRun'
 }
 
 export interface IInputs {
@@ -16,4 +17,5 @@ export interface IInputs {
   layers: number;
   basePaths: string;
   debugShowPaths: boolean;
+  isDryRun: boolean;
 }

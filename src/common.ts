@@ -1,8 +1,8 @@
 /* eslint-disable no-useless-escape */
 import * as core from '@actions/core';
-import {Octokit} from '@octokit/rest';
-import {inspect} from 'util';
-import {IInputs, INPUTS} from './modals';
+import { Octokit } from '@octokit/rest';
+import { inspect } from 'util';
+import { IInputs, INPUTS } from './modals';
 export function getInputs(): IInputs {
   const inputs: IInputs = {
     authToken: core.getInput(INPUTS.authToken),
@@ -11,7 +11,8 @@ export function getInputs(): IInputs {
     delimiter: core.getInput(INPUTS.delimiter),
     layers: parseInt(core.getInput(INPUTS.layers), 10),
     basePaths: core.getInput(INPUTS.basePaths),
-    debugShowPaths: core.getInput(INPUTS.debugShowPaths) === 'true'
+    debugShowPaths: core.getInput(INPUTS.debugShowPaths) === 'true',
+    isDryRun: core.getInput(INPUTS.isDryRun) === 'true'
   };
   core.debug(`Inputs: ${inspect(inputs)}`);
   return inputs;
@@ -34,8 +35,8 @@ export function getOctokit(authToken: string, userAgent = 'github-action'): Octo
       userAgent,
       baseUrl: 'https://api.github.com',
       log: {
-        debug: () => {},
-        info: () => {},
+        debug: () => { },
+        info: () => { },
         warn: console.warn,
         error: console.error
       },
@@ -56,7 +57,7 @@ export function getOctokit(authToken: string, userAgent = 'github-action'): Octo
 export async function getPullRequestFiles(octokit: Octokit, owner: string, repo: string, pullNumber: number): Promise<string[]> {
   // https://octokit.github.io/rest.js/v19#pagination
   // will get 3000 files at a time
-  return await octokit.paginate(octokit.pulls.listFiles, {owner, repo, pull_number: pullNumber}, response =>
+  return await octokit.paginate(octokit.pulls.listFiles, { owner, repo, pull_number: pullNumber }, response =>
     response.data.map(file => file.filename)
   );
 }
