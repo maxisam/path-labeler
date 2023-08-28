@@ -1,7 +1,7 @@
 import * as core from '@actions/core';
-import {inspect} from 'util';
-import {getInputs, getLabels, getOctokit, getOwnerRepo, getPullRequestFiles, getRegexPattern, getTokenSets} from './common';
-import {createActionRequest, IRequestPayload} from './create-action-request';
+import { inspect } from 'util';
+import { getInputs, getLabels, getOctokit, getOwnerRepo, getPullRequestFiles, getRegexPattern, getTokenSets } from './common';
+import { IRequestPayload, createActionRequest } from './create-action-request';
 
 async function run(): Promise<void> {
   const inputs = getInputs();
@@ -30,16 +30,18 @@ async function run(): Promise<void> {
       return;
     }
   }
-  if (octokit === null) {
-    core.setFailed('Error creating octokit:\noctokit was null');
-  } else {
-    try {
-      // github add labels to pull request
-      await octokit.issues.addLabels(request);
-    } catch (error) {
-      core.debug(inspect(error));
-      if (error instanceof Error) {
-        core.setFailed(`Error setting status:\n${error.message}\nRequest object:\n${JSON.stringify(request, null, 2)}`);
+  if (!inputs.isDryRun) {
+    if (octokit === null) {
+      core.setFailed('Error creating octokit:\noctokit was null');
+    } else {
+      try {
+        // github add labels to pull request
+        await octokit.issues.addLabels(request);
+      } catch (error) {
+        core.debug(inspect(error));
+        if (error instanceof Error) {
+          core.setFailed(`Error setting status:\n${error.message}\nRequest object:\n${JSON.stringify(request, null, 2)}`);
+        }
       }
     }
   }
