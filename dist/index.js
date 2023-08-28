@@ -53,7 +53,8 @@ function getInputs() {
         delimiter: core.getInput(modals_1.INPUTS.delimiter),
         layers: parseInt(core.getInput(modals_1.INPUTS.layers), 10),
         basePaths: core.getInput(modals_1.INPUTS.basePaths),
-        debugShowPaths: core.getInput(modals_1.INPUTS.debugShowPaths) === 'true'
+        debugShowPaths: core.getInput(modals_1.INPUTS.debugShowPaths) === 'true',
+        isDryRun: core.getInput(modals_1.INPUTS.isDryRun) === 'true'
     };
     core.debug(`Inputs: ${(0, util_1.inspect)(inputs)}`);
     return inputs;
@@ -262,18 +263,20 @@ function run() {
                 return;
             }
         }
-        if (octokit === null) {
-            core.setFailed('Error creating octokit:\noctokit was null');
-        }
-        else {
-            try {
-                // github add labels to pull request
-                yield octokit.issues.addLabels(request);
+        if (!inputs.isDryRun) {
+            if (octokit === null) {
+                core.setFailed('Error creating octokit:\noctokit was null');
             }
-            catch (error) {
-                core.debug((0, util_1.inspect)(error));
-                if (error instanceof Error) {
-                    core.setFailed(`Error setting status:\n${error.message}\nRequest object:\n${JSON.stringify(request, null, 2)}`);
+            else {
+                try {
+                    // github add labels to pull request
+                    yield octokit.issues.addLabels(request);
+                }
+                catch (error) {
+                    core.debug((0, util_1.inspect)(error));
+                    if (error instanceof Error) {
+                        core.setFailed(`Error setting status:\n${error.message}\nRequest object:\n${JSON.stringify(request, null, 2)}`);
+                    }
                 }
             }
         }
@@ -300,6 +303,7 @@ var INPUTS;
     INPUTS["layers"] = "layers";
     INPUTS["basePaths"] = "basePaths";
     INPUTS["debugShowPaths"] = "debugShowPaths";
+    INPUTS["isDryRun"] = "isDryRun";
 })(INPUTS = exports.INPUTS || (exports.INPUTS = {}));
 
 
