@@ -38,4 +38,4 @@ labeler:
 
 ## Inputs
 
-READ [Action YAML](.\action.yml)
+READ [Action YAML](./action.yml)
