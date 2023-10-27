@@ -2,6 +2,8 @@
 
 # Path Labeler
 
+**This is deprecated. Use https://github.com/maxisam/changed-files-labeler instead.**
+
 Create labels based on the path of the changed files.
 
 This is very helpful for monorepo projects.
@@ -38,4 +40,4 @@ labeler:
 
 ## Inputs
 
-READ [Action YAML](./action.yml)
+READ [Action YAML](.\action.yml)
